@@ -61,17 +61,30 @@ const selectItems = document.querySelectorAll("[data-select-item]");
 const selectValue = document.querySelector("[data-selecct-value]");
 const filterBtn = document.querySelectorAll("[data-filter-btn]");
 
-select.addEventListener("click", function () { elementToggleFunc(this); });
+// toggle select dropdown
+select.addEventListener("click", function () {
+  elementToggleFunc(this);
+});
 
 // add event in all select items
 for (let i = 0; i < selectItems.length; i++) {
   selectItems[i].addEventListener("click", function () {
-
-    let selectedValue = this.innerText.toLowerCase();
+    let selectedValue = this.innerText.toLowerCase().trim();
     selectValue.innerText = this.innerText;
     elementToggleFunc(select);
     filterFunc(selectedValue);
+  });
+}
 
+// add event for filter buttons
+for (let i = 0; i < filterBtn.length; i++) {
+  filterBtn[i].addEventListener("click", function () {
+    // remove active from all
+    filterBtn.forEach(btn => btn.classList.remove("active"));
+    this.classList.add("active");
+
+    let selectedValue = this.innerText.toLowerCase().trim();
+    filterFunc(selectedValue);
   });
 }
 
@@ -79,19 +92,18 @@ for (let i = 0; i < selectItems.length; i++) {
 const filterItems = document.querySelectorAll("[data-filter-item]");
 
 const filterFunc = function (selectedValue) {
-
   for (let i = 0; i < filterItems.length; i++) {
+    const categories = filterItems[i].dataset.category
+      .toLowerCase()
+      .split(",") // allow multiple categories
+      .map(c => c.trim());
 
-    if (selectedValue === "all") {
-      filterItems[i].classList.add("active");
-    } else if (selectedValue === filterItems[i].dataset.category) {
+    if (selectedValue === "all" || categories.includes(selectedValue)) {
       filterItems[i].classList.add("active");
     } else {
       filterItems[i].classList.remove("active");
     }
-
   }
-
 }
 
 // add event in all filter button items for large screen
@@ -157,3 +169,55 @@ for (let i = 0; i < navigationLinks.length; i++) {
 
   });
 }
+function initSliders() {
+  document.querySelectorAll('.blog-post-item').forEach((blogItem) => {
+    const slides = blogItem.querySelectorAll('.slide');
+    const btnPrev = blogItem.querySelector('.prev');
+    const btnNext = blogItem.querySelector('.next');
+    const dotsContainer = blogItem.querySelector('.dots-container');
+    const dots = dotsContainer.querySelectorAll('.dot');
+    let currentSlide = 0;
+
+    const updateSlider = () => {
+      slides.forEach((slide, i) => {
+        slide.style.transform = `translateX(${100 * (i - currentSlide)}%)`;
+
+        // Handle video sound
+        const video = slide.querySelector('video');
+        if (video) {
+          if (i === currentSlide) {
+            video.muted = false;       // enable sound
+            video.play();
+          } else {
+            video.muted = true;        // mute other videos
+            video.pause();             // optional: pause inactive videos
+          }
+        }
+      });
+
+      dots.forEach(dot => dot.classList.remove('active'));
+      if(dots[currentSlide]) dots[currentSlide].classList.add('active');
+    };
+
+    btnNext.addEventListener('click', () => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateSlider();
+    });
+
+    btnPrev.addEventListener('click', () => {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateSlider();
+    });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        currentSlide = i;
+        updateSlider();
+      });
+    });
+
+    updateSlider(); // initialize
+  });
+}
+
+initSliders();

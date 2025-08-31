@@ -321,7 +321,7 @@ main {
   transition: var(--transition-2);
 }
 
-.sidebar.active { max-height: 405px; }
+.sidebar.active { max-height: 505px; }
 
 .sidebar-info {
   position: relative;
@@ -333,7 +333,7 @@ main {
 
 .avatar-box {
   background: var(--bg-gradient-onyx);
-  border-radius: 20px;
+  border-radius: 66px;
 }
 
 .info-content .name {
@@ -440,7 +440,7 @@ main {
 
 .social-item .social-link {
   color: var(--light-gray-70);
-  font-size: 18px;
+  font-size: 22px;
 }
 
 
@@ -1006,6 +1006,12 @@ main {
   object-fit: cover;
   transition: var(--transition-1);
 }
+.project-img video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-1);
+}
 
 .project-item > a:hover img { transform: scale(1.1); }
 
@@ -1067,6 +1073,97 @@ main {
   overflow: hidden;
 }
 
+.slider {
+  position: relative;
+  max-width: 40rem;
+  height: 17.525rem;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.slide {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 17.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s;
+}
+.slide > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-1);
+}
+/* Reset default button styles */
+button {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Styling for the buttons */
+.btn-slide {
+  position: absolute;
+  top: 50%;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 50%;
+  background-color: rgba(77, 77, 77, 0.6); /* Semi-transparent background */
+  color: white; /* Button text color */
+  font-size: 1.5rem; /* Font size for arrow */
+  font-weight: bold;
+  transform: translateY(-50%);
+  transition: all 0.3s ease-in-out; /* Smooth hover effects */
+}
+
+.prev {
+  left: 1rem;
+}
+
+.next {
+  right: 1rem;
+}
+
+/* Hover and active states */
+.btn-slide:hover {
+  background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
+  color: white; /* Green arrow color */
+}
+
+.btn-slide:active {
+  transform: translateY(-50%) scale(0.95); /* Slight shrink effect */
+}
+
+.dots-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.dot {
+  width: 25px;
+  height: 5px;
+  margin: 15px 5px;
+  border-radius: 0.5rem;
+  background: rgba(39, 39, 39, 0.5);
+  cursor: pointer;
+}
+.dot.active {
+  background: #636262;
+}
 .blog-banner-box img {
   width: 100%;
   height: 100%;
@@ -1333,7 +1430,7 @@ textarea.form-input::-webkit-resizer { display: none; }
     margin-bottom: 30px;
   }
 
-  .sidebar.active { max-height: 584px; }
+  .sidebar.active { max-height: 640px; }
 
   .sidebar-info { gap: 25px; }
 
