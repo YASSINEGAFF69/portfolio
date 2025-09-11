@@ -1,227 +1,215 @@
 'use strict';
 
+// ------------------ ELEMENT TOGGLE FUNCTION ------------------ //
+const elementToggleFunc = (elem) => {
+  if (elem) elem.classList.toggle("active");
+};
 
-
-// element toggle function
-const elementToggleFunc = function (elem) {
-  elem.classList.toggle("active");
-}
-
-// sidebar variables
+// ------------------ SIDEBAR ------------------ //
 const sidebar = document.querySelector("[data-sidebar]");
 const sidebarBtn = document.querySelector("[data-sidebar-btn]");
 
-// sidebar toggle functionality for mobile
-sidebarBtn.addEventListener("click", function () {
-  elementToggleFunc(sidebar);
-});
-
-// ✅ Make sidebar active by default on mobile
-if (window.innerWidth <= 1200) { // adjust breakpoint as needed
-  sidebar.classList.add("active");
+// Sidebar toggle for mobile
+if (sidebarBtn && sidebar) {
+  sidebarBtn.addEventListener("click", () => elementToggleFunc(sidebar));
 }
 
+// Make sidebar active by default on mobile
+const sidebarBreakpoint = 1200; // adjust as needed
+const updateSidebarState = () => {
+  if (!sidebar) return;
+  if (window.innerWidth <= sidebarBreakpoint) {
+    sidebar.classList.add("active");
+  } else {
+    sidebar.classList.remove("active");
+  }
+};
 
+// Initialize sidebar state
+updateSidebarState();
+// Optional: update on window resize
+window.addEventListener("resize", updateSidebarState);
 
-
-// testimonials variables
+// ------------------ TESTIMONIALS MODAL ------------------ //
 const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
 const modalContainer = document.querySelector("[data-modal-container]");
 const modalCloseBtn = document.querySelector("[data-modal-close-btn]");
 const overlay = document.querySelector("[data-overlay]");
-
-// modal variable
 const modalImg = document.querySelector("[data-modal-img]");
 const modalTitle = document.querySelector("[data-modal-title]");
 const modalText = document.querySelector("[data-modal-text]");
 
-// modal toggle function
-const testimonialsModalFunc = function () {
-  modalContainer.classList.toggle("active");
-  overlay.classList.toggle("active");
-}
+const testimonialsModalFunc = () => {
+  if (modalContainer) modalContainer.classList.toggle("active");
+  if (overlay) overlay.classList.toggle("active");
+};
 
-// add click event to all modal items
-for (let i = 0; i < testimonialsItem.length; i++) {
+// Open modal on testimonial click
+testimonialsItem.forEach((item) => {
+  item.addEventListener("click", () => {
+    const avatar = item.querySelector("[data-testimonials-avatar]");
+    const title = item.querySelector("[data-testimonials-title]");
+    const text = item.querySelector("[data-testimonials-text]");
 
-  testimonialsItem[i].addEventListener("click", function () {
-
-    modalImg.src = this.querySelector("[data-testimonials-avatar]").src;
-    modalImg.alt = this.querySelector("[data-testimonials-avatar]").alt;
-    modalTitle.innerHTML = this.querySelector("[data-testimonials-title]").innerHTML;
-    modalText.innerHTML = this.querySelector("[data-testimonials-text]").innerHTML;
+    if (avatar && modalImg) {
+      modalImg.src = avatar.src;
+      modalImg.alt = avatar.alt;
+    }
+    if (title && modalTitle) modalTitle.innerHTML = title.innerHTML;
+    if (text && modalText) modalText.innerHTML = text.innerHTML;
 
     testimonialsModalFunc();
-
   });
+});
 
-}
+// Close modal
+if (modalCloseBtn) modalCloseBtn.addEventListener("click", testimonialsModalFunc);
+if (overlay) overlay.addEventListener("click", testimonialsModalFunc);
 
-// add click event to modal close button
-modalCloseBtn.addEventListener("click", testimonialsModalFunc);
-overlay.addEventListener("click", testimonialsModalFunc);
-
-
-
-// custom select variables
+// ------------------ CUSTOM SELECT & FILTER ------------------ //
 const select = document.querySelector("[data-select]");
 const selectItems = document.querySelectorAll("[data-select-item]");
 const selectValue = document.querySelector("[data-selecct-value]");
 const filterBtn = document.querySelectorAll("[data-filter-btn]");
-
-// toggle select dropdown
-select.addEventListener("click", function () {
-  elementToggleFunc(this);
-});
-
-// add event in all select items
-for (let i = 0; i < selectItems.length; i++) {
-  selectItems[i].addEventListener("click", function () {
-    let selectedValue = this.innerText.toLowerCase().trim();
-    selectValue.innerText = this.innerText;
-    elementToggleFunc(select);
-    filterFunc(selectedValue);
-  });
-}
-
-// add event for filter buttons
-for (let i = 0; i < filterBtn.length; i++) {
-  filterBtn[i].addEventListener("click", function () {
-    // remove active from all
-    filterBtn.forEach(btn => btn.classList.remove("active"));
-    this.classList.add("active");
-
-    let selectedValue = this.innerText.toLowerCase().trim();
-    filterFunc(selectedValue);
-  });
-}
-
-// filter variables
 const filterItems = document.querySelectorAll("[data-filter-item]");
 
-const filterFunc = function (selectedValue) {
-  for (let i = 0; i < filterItems.length; i++) {
-    const categories = filterItems[i].dataset.category
-      .toLowerCase()
-      .split(",") // allow multiple categories
-      .map(c => c.trim());
+// Toggle select dropdown
+if (select) {
+  select.addEventListener("click", () => elementToggleFunc(select));
+}
 
+// Filter function
+const filterFunc = (selectedValue) => {
+  filterItems.forEach((item) => {
+    const categories = item.dataset.category
+      ? item.dataset.category.toLowerCase().split(",").map(c => c.trim())
+      : [];
     if (selectedValue === "all" || categories.includes(selectedValue)) {
-      filterItems[i].classList.add("active");
+      item.classList.add("active");
     } else {
-      filterItems[i].classList.remove("active");
+      item.classList.remove("active");
     }
-  }
-}
-
-// add event in all filter button items for large screen
-let lastClickedBtn = filterBtn[0];
-
-for (let i = 0; i < filterBtn.length; i++) {
-
-  filterBtn[i].addEventListener("click", function () {
-
-    let selectedValue = this.innerText.toLowerCase();
-    selectValue.innerText = this.innerText;
-    filterFunc(selectedValue);
-
-    lastClickedBtn.classList.remove("active");
-    this.classList.add("active");
-    lastClickedBtn = this;
-
   });
+};
 
-}
+// Select dropdown item click
+selectItems.forEach((item) => {
+  item.addEventListener("click", () => {
+    const value = item.innerText.toLowerCase().trim();
+    if (selectValue) selectValue.innerText = item.innerText;
+    elementToggleFunc(select);
+    filterFunc(value);
+  });
+});
 
+// Filter button click
+let lastClickedBtn = filterBtn[0];
+filterBtn.forEach((btn) => {
+  btn.addEventListener("click", function () {
+    // Remove active from all
+    filterBtn.forEach(b => b.classList.remove("active"));
+    this.classList.add("active");
 
+    const value = this.innerText.toLowerCase().trim();
+    if (selectValue) selectValue.innerText = this.innerText;
+    filterFunc(value);
 
-// contact form variables
+    lastClickedBtn = this;
+  });
+});
+
+// ------------------ CONTACT FORM ------------------ //
 const form = document.querySelector("[data-form]");
 const formInputs = document.querySelectorAll("[data-form-input]");
 const formBtn = document.querySelector("[data-form-btn]");
 
-// add event to all form input field
-for (let i = 0; i < formInputs.length; i++) {
-  formInputs[i].addEventListener("input", function () {
-
-    // check form validation
-    if (form.checkValidity()) {
-      formBtn.removeAttribute("disabled");
+formInputs.forEach((input) => {
+  input.addEventListener("input", () => {
+    if (form && form.checkValidity()) {
+      if (formBtn) formBtn.removeAttribute("disabled");
     } else {
-      formBtn.setAttribute("disabled", "");
+      if (formBtn) formBtn.setAttribute("disabled", "");
     }
-
-  });
-}
-
-
-
-// page navigation variables
-const navigationLinks = document.querySelectorAll("[data-nav-link]");
-const pages = document.querySelectorAll("[data-page]");
-
-// add event to all nav link
-navigationLinks.forEach((link, linkIndex) => {
-  link.addEventListener("click", () => {
-    pages.forEach((page, pageIndex) => {
-      if (link.innerHTML.toLowerCase() === page.dataset.page) {
-        page.classList.add("active");
-        link.classList.add("active");
-        window.scrollTo(0, 0);
-      } else {
-        page.classList.remove("active");
-        navigationLinks[pageIndex].classList.remove("active");
-      }
-    });
   });
 });
 
+// ------------------ PAGE NAVIGATION ------------------ //
+const navigationLinks = document.querySelectorAll("[data-nav-link]");
+const pages = document.querySelectorAll("[data-page]");
+
+navigationLinks.forEach((link) => {
+  link.addEventListener("click", () => {
+    // Remove active from all pages & links first
+    pages.forEach((page) => page.classList.remove("active"));
+    navigationLinks.forEach((nav) => nav.classList.remove("active"));
+
+    // Activate the page that matches the link
+    pages.forEach((page) => {
+      if (link.innerHTML.toLowerCase() === page.dataset.page) {
+        page.classList.add("active");
+      }
+    });
+
+    // Activate clicked link
+    link.classList.add("active");
+
+    // Scroll to top
+    window.scrollTo(0, 0);
+  });
+});
+
+// ------------------ SLIDER INIT ------------------ //
 function initSliders() {
-  document.querySelectorAll('.blog-post-item').forEach((blogItem) => {
-    const slides = blogItem.querySelectorAll('.slide');
-    const btnPrev = blogItem.querySelector('.prev');
-    const btnNext = blogItem.querySelector('.next');
-    const dotsContainer = blogItem.querySelector('.dots-container');
-    const dots = dotsContainer.querySelectorAll('.dot');
+  document.querySelectorAll(".blog-post-item").forEach((blogItem) => {
+    const slides = blogItem.querySelectorAll(".slide");
+    const btnPrev = blogItem.querySelector(".prev");
+    const btnNext = blogItem.querySelector(".next");
+    const dotsContainer = blogItem.querySelector(".dots-container");
+    const dots = dotsContainer ? dotsContainer.querySelectorAll(".dot") : [];
     let currentSlide = 0;
+
+    if (slides.length === 0) return; // no slides, skip
 
     const updateSlider = () => {
       slides.forEach((slide, i) => {
         slide.style.transform = `translateX(${100 * (i - currentSlide)}%)`;
 
-        // Handle video sound
-        const video = slide.querySelector('video');
+        const video = slide.querySelector("video");
         if (video) {
           if (i === currentSlide) {
-            video.muted = false;       // enable sound
-            video.play();
+            video.muted = false;
+            video.play().catch(() => {});
           } else {
-            video.muted = true;        // mute other videos
-            video.pause();             // optional: pause inactive videos
+            video.muted = true;
+            video.pause();
           }
         }
       });
 
-      dots.forEach(dot => dot.classList.remove('active'));
-      if(dots[currentSlide]) dots[currentSlide].classList.add('active');
+      if (dots.length > 0) {
+        dots.forEach((dot) => dot.classList.remove("active"));
+        if (dots[currentSlide]) dots[currentSlide].classList.add("active");
+      }
     };
 
-    btnNext.addEventListener('click', () => {
+    if (btnNext) btnNext.addEventListener("click", () => {
       currentSlide = (currentSlide + 1) % slides.length;
       updateSlider();
     });
 
-    btnPrev.addEventListener('click', () => {
+    if (btnPrev) btnPrev.addEventListener("click", () => {
       currentSlide = (currentSlide - 1 + slides.length) % slides.length;
       updateSlider();
     });
 
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        currentSlide = i;
-        updateSlider();
+    if (dots.length > 0) {
+      dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => {
+          currentSlide = i;
+          updateSlider();
+        });
       });
-    });
+    }
 
     updateSlider(); // initialize
   });
