@@ -17,11 +17,7 @@
 
 :root {
 
-  /**
-   * colors
-   */
-
-  /* gradient */
+  
 
   --bg-gradient-onyx: linear-gradient(
     to bottom right, 
@@ -472,20 +468,29 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
+  padding: 5px 10px;
 }
 
 .navbar-link {
   color: var(--light-gray);
   font-size: var(--fs-8);
-  padding: 20px 7px;
-  transition: color var(--transition-1);
+  padding: 4px 7px;
+  border: none;
+  margin: 7px 1px;
+  border-radius: 0.9rem; /* optional rounded corners */
+  background-color: transparent; /* default background */
+  transition: background-color 0.3s, color var(--transition-1);
 }
 
 .navbar-link:hover,
-.navbar-link:focus { color: var(--light-gray-70); }
+.navbar-link:focus {
+  color: var(--light-gray-70);
+}
 
-.navbar-link.active { color: var(--orange-yellow-crayola); }
+.navbar-link.active {
+  background-color: var(--orange-yellow-crayola); /* active background */
+  color: var(--smoky-black); /* keep text color unchanged */
+}
 
 
 
@@ -1048,7 +1053,7 @@ main {
   gap: 20px;
 }
 
-.blog-post-item > a {
+.blog-post-item  {
   position: relative;
   background: var(--border-gradient-onyx);
   height: 100%;
