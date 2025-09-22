@@ -14,21 +14,7 @@ if (sidebarBtn && sidebar) {
   sidebarBtn.addEventListener("click", () => elementToggleFunc(sidebar));
 }
 
-// Make sidebar active by default on mobile
-const sidebarBreakpoint = 1200; // adjust as needed
-const updateSidebarState = () => {
-  if (!sidebar) return;
-  if (window.innerWidth <= sidebarBreakpoint) {
-    sidebar.classList.add("active");
-  } else {
-    sidebar.classList.remove("active");
-  }
-};
 
-// Initialize sidebar state
-updateSidebarState();
-// Optional: update on window resize
-window.addEventListener("resize", updateSidebarState);
 
 // ------------------ TESTIMONIALS MODAL ------------------ //
 const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
